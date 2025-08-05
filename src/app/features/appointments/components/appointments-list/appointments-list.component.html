@@ -1,0 +1,42 @@
+<div class="container">
+  <h2>Gestión de Turnos</h2>
+
+  <div class="filters">
+    <input type="text" [(ngModel)]="clientNameFilter" (input)="getAppointments()" placeholder="Buscar por cliente">
+    <input type="date" [(ngModel)]="dateFilter" (change)="getAppointments()">
+  </div>
+
+  <button>Agregar Turno</button>
+
+  @if (loading()) {
+    <p>Cargando turnos...</p>
+  } @else if (appointments().length > 0) {
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (appointment of appointments(); track appointment.id) {
+          <tr>
+            <td>{{ appointment.clientName }}</td>
+            <td>{{ appointment.appointmentDate | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ appointment.startTime }}</td>
+            <td>{{ appointment.description }}</td>
+            <td>
+              <button>Editar</button>
+              <button>Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p>No se encontraron turnos.</p>
+  }
+</div>
