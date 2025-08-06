@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Appointment, CreateAppointmentPayload, UpdateAppointmentPayload } from '../types/appoinment.types';
 
@@ -10,11 +10,13 @@ export class AppointmentsService {
   private http = inject(HttpClient);
   private apiUrl = 'https://localhost:7037/api/Appointments';
 
-  getAppointments(date: string, clientName: string): Observable<Appointment[]> {
-    const params = {
-      date: date,
-      clientName: clientName,
-    };
+  getAppointments(date: string, clientName: string, sortBy: string | null, sortDirection: 'asc' | 'desc'): Observable<Appointment[]> {
+    let params = new HttpParams();
+    if (date) params = params.append('date', date);
+    if (clientName) params = params.append('clientName', clientName);
+    if (sortBy) params = params.append('sortBy', sortBy);
+    if (sortDirection) params = params.append('sortDirection', sortDirection);
+
     return this.http.get<Appointment[]>(this.apiUrl, { params: params });
   }
 

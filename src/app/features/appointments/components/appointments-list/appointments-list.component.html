@@ -7,9 +7,18 @@
     <button (click)="onSearch()">Buscar</button>
   </div>
 
-  <button (click)="openFormPopup()">Agregar Turno</button>
+  <button (click)="openFormPopup(null)">Agregar Turno</button>
 
   <table>
+    <thead>
+      <tr>
+        <th (click)="onSort('clientName')">Cliente</th>
+        <th (click)="onSort('appointmentDate')">Fecha</th>
+        <th (click)="onSort('startTime')">Hora</th>
+        <th>Descripción</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
     <tbody>
       @if (loading()) {
         <tr>
@@ -23,8 +32,8 @@
             <td>{{ appointment.startTime }}</td>
             <td>{{ appointment.description }}</td>
             <td>
-              <button>Editar</button>
-              <button>Eliminar</button>
+              <button (click)="openFormPopup(appointment)">Editar</button>
+              <button (click)="onDeleteAppointment(appointment.id)">Eliminar</button>
             </td>
           </tr>
         }
@@ -39,6 +48,7 @@
 
 @if (showPopup()) {
   <app-appointment-form
+    [selectedAppointment]="selectedAppointment()"
     (formSubmitted)="onAppointmentSubmitted()"
     (formCanceled)="onAppointmentCanceled()"
   ></app-appointment-form>
