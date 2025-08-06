@@ -7,18 +7,9 @@
     <button (click)="onSearch()">Buscar</button>
   </div>
 
-  <button>Agregar Turno</button>
+  <button (click)="openFormPopup()">Agregar Turno</button>
 
   <table>
-    <thead>
-      <tr>
-        <th>Cliente</th>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Descripción</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
     <tbody>
       @if (loading()) {
         <tr>
@@ -28,7 +19,8 @@
         @for (appointment of appointments(); track appointment.id) {
           <tr>
             <td>{{ appointment.clientName }}</td>
-            <td>{{ appointment.appointmentDate }}</td> <td>{{ appointment.startTime }}</td>
+            <td>{{ appointment.appointmentDate }}</td>
+            <td>{{ appointment.startTime }}</td>
             <td>{{ appointment.description }}</td>
             <td>
               <button>Editar</button>
@@ -44,3 +36,10 @@
     </tbody>
   </table>
 </div>
+
+@if (showPopup()) {
+  <app-appointment-form
+    (formSubmitted)="onAppointmentSubmitted()"
+    (formCanceled)="onAppointmentCanceled()"
+  ></app-appointment-form>
+}

@@ -1,0 +1,31 @@
+<div class="popup-overlay">
+  <div class="popup-content">
+    <h2>Agregar Nuevo Turno</h2>
+    <form (ngSubmit)="onSubmit()">
+      <div>
+        <label for="clientName">Nombre del Cliente:</label>
+        <input id="clientName" type="text" [(ngModel)]="appointment().clientName" name="clientName" required>
+      </div>
+
+      <div>
+        <label for="appointmentDate">Fecha:</label>
+        <input id="appointmentDate" type="date" [(ngModel)]="appointment().appointmentDate" name="appointmentDate" required>
+      </div>
+
+      <div>
+        <label for="startTime">Hora:</label>
+        <input id="startTime" type="time" [(ngModel)]="appointment().startTime" name="startTime" required>
+      </div>
+
+      <div>
+        <label for="description">Descripción:</label>
+        <textarea id="description" [(ngModel)]="appointment().description" name="description"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit">Guardar</button>
+        <button type="button" (click)="onCancel()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
