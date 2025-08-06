@@ -20,10 +20,9 @@ export class AppointmentsListComponent implements OnInit {
   public dateFilter = signal<string>('');
 
   ngOnInit(): void {
-    this.getAppointments();
   }
 
-  getAppointments(): void {
+    onSearch(): void {
     this.loading.set(true);
     this.appointmentsService
       .getAppointments(this.dateFilter(), this.clientNameFilter())

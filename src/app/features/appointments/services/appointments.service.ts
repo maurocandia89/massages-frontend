@@ -8,7 +8,7 @@ import { Appointment, CreateAppointmentPayload, UpdateAppointmentPayload } from 
 })
 export class AppointmentsService {
   private http = inject(HttpClient);
-  private apiUrl = 'https://localhost:7223/api/Appointments';
+  private apiUrl = 'https://localhost:7037/api/Appointments';
 
   getAppointments(date: string, clientName: string): Observable<Appointment[]> {
     const params = {

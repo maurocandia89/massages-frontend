@@ -4,10 +4,10 @@ export type Appointment = {
     appointmentDate: string;
     startTime: string;
     description: string | null;
-}
+};
 
-export type CreateAppointmentPayload = Omit<Appointment, 'id'>;
-export type UpdateAppointmentPayload = Omit<Appointment, 'id'>;
+export type CreateAppointmentPayload = Omit<Appointment, 'Id'>;
+export type UpdateAppointmentPayload = Omit<Appointment, 'Id'>;
 export type AppointmentFilters = {
     clientName: string;
     appointmentDate: string;
