@@ -1,0 +1,68 @@
+<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-8">
+  <div class="w-full max-w-6xl p-8 space-y-6 bg-white rounded-xl shadow-lg">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-3xl font-bold text-gray-900">Gestión de Turnos (Admin)</h2>
+      <button 
+        (click)="onLogout()"
+        class="py-2 px-4 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition"
+      >
+        Cerrar Sesión
+      </button>
+    </div>
+
+    <!-- Tabla de turnos -->
+    @if (loading()) {
+      <div class="text-center text-indigo-600">Cargando turnos...</div>
+    } @else if (errorMessage()) {
+      <div class="text-center text-red-500">{{ errorMessage() }}</div>
+    } @else {
+      <div class="overflow-x-auto rounded-xl shadow-md">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-indigo-600 text-white">
+            <tr>
+              <th 
+                class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider cursor-pointer"
+                (click)="sort('clientName')"
+              >
+                Cliente
+                @if (sortBy() === 'clientName') {
+                  <span>{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
+                }
+              </th>
+              <th 
+                class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider cursor-pointer"
+                (click)="sort('appointmentDate')"
+              >
+                Fecha
+                @if (sortBy() === 'appointmentDate') {
+                  <span>{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
+                }
+              </th>
+              <th 
+                class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider cursor-pointer"
+                (click)="sort('startTime')"
+              >
+                Hora
+                @if (sortBy() === 'startTime') {
+                  <span>{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
+                }
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            @for (appointment of appointments(); track appointment.id) {
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ appointment.clientName }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ appointment.startTime }}</td>
+              </tr>
+            } @empty {
+                <tr class="text-center text-gray-500 mt-6">
+                    <td colspan="3" class="p-4">No se encontraron turnos.</td>
+                </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

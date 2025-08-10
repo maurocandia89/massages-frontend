@@ -1,11 +1,13 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-// Importación corregida: ahora apunta al servicio
 import { AuthService } from '../../services/auth.service';
 import { RegisterUser } from '../../types/auth.types';
+
+// Esto permite que TypeScript reconozca el objeto global 'Swal'
+declare const Swal: any;
 
 @Component({
   selector: 'app-register',
@@ -14,35 +16,48 @@ import { RegisterUser } from '../../types/auth.types';
   templateUrl: './register.component.html',
 })
 export class RegisterComponent {
-  // Las propiedades del signal ahora usan camelCase para coincidir con el HTML
   user = signal<RegisterUser>({
     name: '',
     lastName: '',
     email: '',
     password: ''
   });
-  // Usamos un array para almacenar múltiples mensajes de error
   errorMessages = signal<string[]>([]);
 
   constructor(private authService: AuthService, private router: Router) { }
 
-  updateUser(field: keyof RegisterUser, event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
+  updateUser(field: keyof RegisterUser, value: string): void {
     this.user.update(current => ({ ...current, [field]: value }));
   }
 
+  isFormValid = computed(() => {
+    const u = this.user();
+    return u.name.trim() !== '' && u.lastName.trim() !== '' && u.email.trim() !== '' && u.password.trim() !== '';
+  });
+
   register(): void {
-    // Limpiamos los mensajes de error antes de cada intento
+    if (!this.isFormValid()) {
+      this.errorMessages.set(['Por favor, completa todos los campos.']);
+      return;
+    }
+
     this.errorMessages.set([]);
 
     this.authService.register(this.user()).subscribe({
       next: (response) => {
-        this.router.navigate(['/login']);
+        // Mostramos un SweetAlert de éxito y luego redirigimos
+        Swal.fire({
+          title: '¡Registro Exitoso!',
+          text: 'Tu cuenta ha sido creada. Ahora puedes iniciar sesión.',
+          icon: 'success',
+          confirmButtonText: 'Continuar'
+        }).then(() => {
+          this.router.navigate(['/login']);
+        });
       },
       error: (err) => {
-        // La API devuelve un array de errores si el registro falla
+        // Mantenemos la lógica de mostrar errores debajo del formulario
         if (err.error && Array.isArray(err.error)) {
-          // Extraemos las descripciones de los errores y las mostramos
           const messages = err.error.map((e: any) => e.description);
           this.errorMessages.set(messages);
         } else {
@@ -51,5 +66,9 @@ export class RegisterComponent {
         console.error('Error en el registro:', err);
       }
     });
+  }
+
+  onCancel(): void {
+    this.router.navigate(['/login']);
   }
 }

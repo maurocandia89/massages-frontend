@@ -1,0 +1,108 @@
+<div class="p-6 bg-gray-100 min-h-screen">
+  <div class="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-gray-800">Citas del Cliente</h2>
+      <button (click)="onLogout()"
+        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out">
+        Cerrar Sesión
+      </button>
+    </div>
+
+    @if (!showForm()) {
+      <button (click)="openForm()"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out">
+        Añadir Nueva Cita
+      </button>
+    }
+
+    @if (showForm()) {
+      <div class="mt-6 p-6 border rounded-lg shadow-inner bg-gray-50">
+        <h3 class="text-xl font-bold mb-4">Añadir Nueva Cita</h3>
+        <form (ngSubmit)="addAppointment()" class="space-y-4">
+          <div>
+            <label for="title" class="block text-sm font-medium text-gray-700">Título</label>
+            <input type="text" id="title"
+              [ngModel]="newAppointment().title" (ngModelChange)="updateNewAppointmentTitle($event)" name="title"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
+            <textarea id="description"
+              [ngModel]="newAppointment().description" (ngModelChange)="updateNewAppointmentDescription($event)" name="description"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+          </div>
+          <div>
+            <label for="startTime" class="block text-sm font-medium text-gray-700">Hora de inicio</label>
+            <input type="datetime-local" id="startTime"
+              [ngModel]="newAppointment().startTime" (ngModelChange)="updateNewAppointmentStartTime($event)" name="startTime"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+          <div>
+            <label for="endTime" class="block text-sm font-medium text-gray-700">Hora de finalización</label>
+            <input type="datetime-local" id="endTime"
+              [ngModel]="newAppointment().endTime" (ngModelChange)="updateNewAppointmentEndTime($event)" name="endTime"
+              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+          <div class="flex justify-end space-x-4">
+            <button type="button" (click)="cancelForm()"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+              Cancelar
+            </button>
+            <button type="submit"
+              class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              Guardar Cita
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+
+    <div class="mt-6">
+      @if (appointments().length > 0) {
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  ID
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Título
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Descripción
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Inicio
+                </th>
+                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Fin
+                </th>
+                <th scope="col" class="relative px-6 py-3">
+                  <span class="sr-only">Acciones</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              @for (appointment of appointments(); track appointment.id) {
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ appointment.id }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ appointment.title }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ appointment.description }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ appointment.startTime | date: 'short' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ appointment.endTime | date: 'short' }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-4" (click)="updateAppointment(appointment)">Editar</a>
+                    <a href="#" class="text-red-600 hover:text-red-900" (click)="deleteAppointment(appointment.id)">Eliminar</a>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="text-center py-8 text-gray-500">No hay citas disponibles.</div>
+      }
+    </div>
+  </div>
+</div>

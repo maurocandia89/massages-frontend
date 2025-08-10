@@ -21,15 +21,28 @@ export class LoginComponent {
 
   constructor(private authService: AuthService, private router: Router) { }
 
-  updateUser(field: keyof LoginUser, event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
+  updateUser(field: keyof LoginUser, value: string): void {
     this.user.update(current => ({ ...current, [field]: value }));
   }
 
   login(): void {
     this.authService.login(this.user()).subscribe({
-      next: (response) => {
-        this.router.navigate(['/appointments']);
+      next: () => {
+        // Obtenemos el rol del usuario después del login exitoso
+        const userRole = this.authService.getUserRole();
+        
+        // --- AQUÍ ESTÁ EL LOG PARA DEPURAR ---
+        console.log('Rol de usuario decodificado:', userRole);
+        // --- FIN DEL LOG ---
+
+        if (userRole === 'Admin') {
+          this.router.navigate(['/admin/appointments']);
+        } else if (userRole === 'Cliente') {
+          this.router.navigate(['/client/appointments']);
+        } else {
+          // Si el rol no se reconoce, redirigir a una página por defecto o a login
+          this.router.navigate(['/login']);
+        }
       },
       error: (err) => {
         this.errorMessage.set('Credenciales incorrectas. Intenta de nuevo.');
