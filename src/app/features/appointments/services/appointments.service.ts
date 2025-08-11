@@ -4,35 +4,35 @@ import { Observable } from 'rxjs';
 import { Appointment, CreateAppointmentPayload, UpdateAppointmentPayload } from '../types/appoinment.types';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AppointmentsService {
-  private http = inject(HttpClient);
-  private apiUrl = 'https://localhost:7037/api/Appointments';
+    private http = inject(HttpClient);
+    private apiUrl = 'https://localhost:7037/api/Appointments';
 
-  getAppointments(date: string, clientName: string, sortBy: string | null, sortDirection: 'asc' | 'desc'): Observable<Appointment[]> {
-    let params = new HttpParams();
-    if (date) params = params.append('date', date);
-    if (clientName) params = params.append('clientName', clientName);
-    if (sortBy) params = params.append('sortBy', sortBy);
-    if (sortDirection) params = params.append('sortDirection', sortDirection);
+    getAppointments(date: string, clientName: string, sortBy: string | null, sortDirection: 'asc' | 'desc'): Observable<Appointment[]> {
+        let params = new HttpParams();
+        if (date) params = params.append('date', date);
+        if (clientName) params = params.append('clientName', clientName);
+        if (sortBy) params = params.append('sortBy', sortBy);
+        if (sortDirection) params = params.append('sortDirection', sortDirection);
 
-    return this.http.get<Appointment[]>(this.apiUrl, { params: params });
-  }
+        return this.http.get<Appointment[]>(this.apiUrl, { params: params });
+    }
 
-  getAppointmentById(id: number): Observable<Appointment> {
-    return this.http.get<Appointment>(`${this.apiUrl}/${id}`);
-  }
+    getAppointmentById(id: string): Observable<Appointment> { // Corregido el tipo de id
+        return this.http.get<Appointment>(`${this.apiUrl}/${id}`);
+    }
 
-  createAppointment(payload: CreateAppointmentPayload): Observable<Appointment> {
-    return this.http.post<Appointment>(this.apiUrl, payload);
-  }
+    createAppointment(payload: CreateAppointmentPayload): Observable<Appointment> {
+        return this.http.post<Appointment>(this.apiUrl, payload);
+    }
 
-  updateAppointment(id: number, payload: UpdateAppointmentPayload): Observable<Appointment> {
-    return this.http.put<Appointment>(`${this.apiUrl}/${id}`, payload);
-  }
+    updateAppointment(id: string, payload: UpdateAppointmentPayload): Observable<Appointment> { // Corregido el tipo de id
+        return this.http.put<Appointment>(`${this.apiUrl}/${id}`, payload);
+    }
 
-  deleteAppointment(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
+    deleteAppointment(id: string): Observable<void> { // Corregido el tipo de id
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    }
 }
