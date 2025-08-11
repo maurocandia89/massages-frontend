@@ -20,6 +20,18 @@ export class AppointmentsService {
         return this.http.get<Appointment[]>(this.apiUrl, { params: params });
     }
 
+    getMyAppointments(sortBy: string, sortDirection: 'asc' | 'desc'): Observable<Appointment[]> {
+        let params = new HttpParams()
+            .set('sortBy', sortBy)
+            .set('sortDirection', sortDirection);
+
+        return this.http.get<Appointment[]>(`${this.apiUrl}/my-appointments`, { params });
+    }
+
+    // getMyAppointments(): Observable<Appointment[]> {
+    //     return this.http.get<Appointment[]>(`${this.apiUrl}/my-appointments`);
+    // }
+
     getAppointmentById(id: string): Observable<Appointment> { // Corregido el tipo de id
         return this.http.get<Appointment>(`${this.apiUrl}/${id}`);
     }

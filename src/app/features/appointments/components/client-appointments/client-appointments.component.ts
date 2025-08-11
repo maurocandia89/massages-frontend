@@ -6,6 +6,8 @@ import { AppointmentsService } from '../../services/appointments.service';
 import { TreatmentsService } from '../../services/treatments.service';
 import { Appointment, CreateAppointmentPayload, Treatment } from '../../types/appoinment.types';
 
+declare const Swal: any;
+
 @Component({
   selector: 'app-client-appointments',
   standalone: true,
@@ -19,8 +21,6 @@ export class ClientAppointmentsComponent implements OnInit {
   private router = inject(Router);
 
   public newAppointment = signal<CreateAppointmentPayload>({
-    clientId: '',
-    clientName: 'Invitado',
     appointmentDate: '',
     treatmentId: '',
   });
@@ -30,10 +30,25 @@ export class ClientAppointmentsComponent implements OnInit {
   public showForm = signal(false);
   public loading = signal(true);
   public errorMessage = signal<string | null>(null);
+  public successMessage = signal<string | null>(null);
+  public editingAppointmentId = signal<string | null>(null);
+  public canEditAppointments = signal<boolean>(true);
+  public sortBy = signal<string>('appointmentDate');
+  public sortDirection = signal<'asc' | 'desc'>('asc');
 
   ngOnInit(): void {
     this.fetchAppointments();
     this.fetchTreatments();
+  }
+
+  sort(column: string) {
+    if (this.sortBy() === column) {
+      this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortBy.set(column);
+      this.sortDirection.set('asc');
+    }
+    this.fetchAppointments();
   }
 
   fetchTreatments() {
@@ -50,52 +65,107 @@ export class ClientAppointmentsComponent implements OnInit {
 
   fetchAppointments() {
     this.loading.set(true);
-    this.appointmentsService.getAppointments('', '', '', 'asc').subscribe({
+    this.appointmentsService.getMyAppointments(
+      this.sortBy(),
+      this.sortDirection()
+    ).subscribe({
       next: (appointments: Appointment[]) => {
         this.appointments.set(appointments);
         this.loading.set(false);
       },
       error: (error) => {
-        console.error('Error al obtener las citas:', error);
-        this.errorMessage.set('Error al cargar las citas.');
+        if (error.status === 401 || error.status === 403) {
+          this.errorMessage.set('No tienes permisos para ver tus citas. Iniciá sesión nuevamente.');
+          this.router.navigate(['/login']);
+        } else {
+          this.errorMessage.set('No se pudieron cargar tus citas.');
+        }
         this.loading.set(false);
       }
     });
   }
 
-  addAppointment() {
-    const payload: CreateAppointmentPayload = this.newAppointment();
-    this.appointmentsService.createAppointment(payload).subscribe({
-      next: (response) => {
-        console.log('Cita creada exitosamente', response);
-        this.cancelForm();
-        this.fetchAppointments();
-      },
-      error: (error) => {
-        console.error('Error al crear la cita', error);
-        this.errorMessage.set('Error al crear la cita. Intenta de nuevo.');
-      }
-    });
+
+  private showSuccess(message: string) {
+    this.successMessage.set(message);
+    setTimeout(() => this.successMessage.set(null), 3000);
   }
 
-  // Se modifican los métodos de actualización y eliminación para que el id sea de tipo string
+  addAppointment() {
+    const payload = this.newAppointment();
+    if (!payload.appointmentDate || !payload.treatmentId) {
+      this.errorMessage.set('Todos los campos son obligatorios.');
+      return;
+    }
+
+    const now = new Date().toISOString();
+    if (payload.appointmentDate < now) {
+      this.errorMessage.set('La fecha debe ser futura.');
+      return;
+    }
+
+    if (this.editingAppointmentId()) {
+      this.appointmentsService.updateAppointment(this.editingAppointmentId()!, payload).subscribe({
+        next: () => {
+          this.showSuccess('Turno actualizado exitosamente');
+          this.cancelForm();
+          this.fetchAppointments();
+        },
+        error: (error) => {
+          console.error('Error al actualizar el turno', error);
+          this.errorMessage.set('Error al actualizar el turno. Intenta de nuevo.');
+        }
+      });
+    } else {
+      this.appointmentsService.createAppointment(payload).subscribe({
+        next: () => {
+          this.showSuccess('Turno creado exitosamente');
+          this.cancelForm();
+          this.fetchAppointments();
+        },
+        error: (error) => {
+          console.error('Error al crear el turno', error);
+          this.errorMessage.set('Error al crear el turno. Intenta de nuevo.');
+        }
+      });
+    }
+  }
+
   updateAppointment(appointment: Appointment) {
-    // Implementar la lógica de actualización aquí
-    console.log('Actualizar cita:', appointment.id);
+    this.editingAppointmentId.set(appointment.id);
+    this.newAppointment.set({
+      appointmentDate: appointment.appointmentDate,
+      treatmentId: appointment.treatmentId
+    });
+    this.showForm.set(true);
   }
 
   deleteAppointment(id: string) {
-    this.appointmentsService.deleteAppointment(id).subscribe({
-      next: (response) => {
-        console.log('Cita eliminada exitosamente', response);
-        this.fetchAppointments();
-      },
-      error: (error) => {
-        console.error('Error al eliminar la cita', error);
-        this.errorMessage.set('Error al eliminar la cita.');
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Esta acción eliminará el turno de forma permanente.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result: any) => {
+      if (result.isConfirmed) {
+        this.appointmentsService.deleteAppointment(id).subscribe({
+          next: () => {
+            this.showSuccess('Turno eliminado exitosamente');
+            this.fetchAppointments();
+          },
+          error: (error) => {
+            console.error('Error al eliminar el turno', error);
+            this.errorMessage.set('Error al eliminar el turno.');
+          }
+        });
       }
     });
   }
+
 
   onLogout() {
     console.log('Sesión cerrada');
@@ -109,19 +179,18 @@ export class ClientAppointmentsComponent implements OnInit {
   cancelForm() {
     this.showForm.set(false);
     this.newAppointment.set({
-        clientId: '',
-        clientName: '',
-        appointmentDate: '',
-        treatmentId: ''
+      appointmentDate: '',
+      treatmentId: ''
     });
+    this.editingAppointmentId.set(null)
+    this.errorMessage.set('');
   }
 
-  // Nuevo método para actualizar los campos
   updateNewAppointment(field: keyof CreateAppointmentPayload, value: string) {
     this.newAppointment.update(app => ({ ...app, [field]: value }));
   }
 
-   getTreatmentTitle(treatmentId: string): string {
+  getTreatmentTitle(treatmentId: string): string {
     const treatment = this.treatments().find(t => t.id === treatmentId);
     return treatment ? treatment.title : 'Desconocido';
   }

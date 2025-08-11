@@ -4,9 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestión de Tratamientos</title>
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome para los íconos de editar y borrar -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     body {
@@ -19,7 +17,6 @@
     <div class="w-full max-w-6xl p-8 space-y-6 bg-white rounded-xl shadow-lg">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-3xl font-bold text-gray-900">Gestión de Tratamientos</h2>
-        <!-- Botón para mostrar/ocultar el formulario -->
         <button
           (click)="toggleForm()"
           class="py-2 px-4 rounded-md font-medium transition"
@@ -32,7 +29,6 @@
       @if (userRole() !== 'Admin') {
         <div class="text-center text-red-500">{{ errorMessage() }}</div>
       } @else {
-        <!-- Formulario para agregar/editar un tratamiento -->
         @if (showForm()) {
           <form (ngSubmit)="saveTreatment()" class="space-y-4 p-6 bg-gray-50 rounded-xl shadow-inner">
             <h3 class="text-xl font-bold text-gray-800">
@@ -65,7 +61,6 @@
                 class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               ></textarea>
             </div>
-            <!-- Nuevo control para el estado del tratamiento -->
             <div>
               <label class="block text-sm font-medium text-gray-700">Estado</label>
               <div class="mt-1 flex items-center space-x-4">
@@ -104,7 +99,7 @@
           </form>
         }
 
-        <!-- Tabla de tratamientos existentes -->
+
         @if (!showForm()) {
           <div class="mt-8">
             <h3 class="text-xl font-bold text-gray-800 mb-4">Tratamientos Disponibles</h3>

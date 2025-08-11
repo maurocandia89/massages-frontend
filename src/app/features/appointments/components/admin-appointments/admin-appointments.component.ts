@@ -80,7 +80,6 @@ export class AdminAppointmentsComponent implements OnInit {
         this.fetchData();
     }
 
-    // Nuevo método para navegar al componente de gestión de tratamientos
     navigateToTreatments(): void {
         this.router.navigate(['/admin/treatments']);
     }

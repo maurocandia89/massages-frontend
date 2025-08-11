@@ -2,11 +2,9 @@ import { Component, signal, computed } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
 import { AuthService } from '../../services/auth.service';
 import { RegisterUser } from '../../types/auth.types';
 
-// Esto permite que TypeScript reconozca el objeto global 'Swal'
 declare const Swal: any;
 
 @Component({
@@ -45,7 +43,6 @@ export class RegisterComponent {
 
     this.authService.register(this.user()).subscribe({
       next: (response) => {
-        // Mostramos un SweetAlert de éxito y luego redirigimos
         Swal.fire({
           title: '¡Registro Exitoso!',
           text: 'Tu cuenta ha sido creada. Ahora puedes iniciar sesión.',
@@ -56,7 +53,6 @@ export class RegisterComponent {
         });
       },
       error: (err) => {
-        // Mantenemos la lógica de mostrar errores debajo del formulario
         if (err.error && Array.isArray(err.error)) {
           const messages = err.error.map((e: any) => e.description);
           this.errorMessages.set(messages);

@@ -28,25 +28,20 @@ export class LoginComponent {
   login(): void {
     this.authService.login(this.user()).subscribe({
       next: () => {
-        // Obtenemos el rol del usuario después del login exitoso
+
         const userRole = this.authService.getUserRole();
-        
-        // --- AQUÍ ESTÁ EL LOG PARA DEPURAR ---
-        console.log('Rol de usuario decodificado:', userRole);
-        // --- FIN DEL LOG ---
 
         if (userRole === 'Admin') {
           this.router.navigate(['/admin/appointments']);
         } else if (userRole === 'Cliente') {
           this.router.navigate(['/client/appointments']);
         } else {
-          // Si el rol no se reconoce, redirigir a una página por defecto o a login
+
           this.router.navigate(['/login']);
         }
       },
       error: (err) => {
         this.errorMessage.set('Credenciales incorrectas. Intenta de nuevo.');
-        console.error('Error en el login:', err);
       }
     });
   }

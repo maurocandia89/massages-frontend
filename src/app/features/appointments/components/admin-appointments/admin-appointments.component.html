@@ -3,7 +3,6 @@
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-3xl font-bold text-gray-900">Gestión de Turnos (Admin)</h2>
             <div class="flex space-x-4">
-                <!-- Botón para gestionar tratamientos, redirige a la vista de tratamientos -->
                 <button
                     (click)="navigateToTreatments()"
                     class="py-2 px-4 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 transition"
@@ -19,7 +18,7 @@
             </div>
         </div>
 
-        <!-- Tabla de turnos -->
+
         @if (loading()) {
             <div class="text-center text-indigo-600">Cargando turnos...</div>
         } @else if (errorMessage()) {

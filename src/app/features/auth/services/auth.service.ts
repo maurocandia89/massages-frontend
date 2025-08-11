@@ -21,7 +21,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {
     if (this.token()) {
-      this.decodeToken(); // Decodificar el token si ya existe
+      this.decodeToken();
     }
   }
 

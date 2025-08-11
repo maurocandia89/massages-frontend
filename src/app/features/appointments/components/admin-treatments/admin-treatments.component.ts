@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule, NgIf, NgFor, NgClass, AsyncPipe, DatePipe } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TreatmentsService } from '../../services/treatments.service';
@@ -14,12 +14,8 @@ declare const Swal: any;
   imports: [
     CommonModule,
     FormsModule,
-    DatePipe,
-    NgIf,
-    NgFor,
     NgClass,
-    AsyncPipe
-  ],
+],
   templateUrl: './admin-treatments.component.html',
 })
 export class AdminTreatmentsComponent implements OnInit {
@@ -65,60 +61,6 @@ export class AdminTreatmentsComponent implements OnInit {
     });
   }
 
-  // saveTreatment(): void {
-  //   const currentTreatment = this.newTreatment();
-  //   if (!currentTreatment.title || !currentTreatment.description) {
-  //     this.errorMessage.set('El título y la descripción son obligatorios.');
-  //     return;
-  //   }
-
-  //   if (this.editingTreatmentId()) {
-  //     this.treatmentsService.updateTreatment(this.editingTreatmentId()!, currentTreatment).subscribe({
-  //       next: () => {
-  //         Swal.fire({
-  //           title: '¡Actualizado!',
-  //           text: 'El tratamiento ha sido actualizado con éxito.',
-  //           icon: 'success',
-  //           confirmButtonText: 'OK'
-  //         });
-  //         this.resetFormAndState();
-  //         this.fetchTreatments();
-  //       },
-  //       error: (err) => {
-  //         console.error('Error al actualizar el tratamiento:', err);
-  //         Swal.fire({
-  //           title: 'Error',
-  //           text: 'Hubo un problema al actualizar el tratamiento. Por favor, inténtalo de nuevo.',
-  //           icon: 'error',
-  //           confirmButtonText: 'OK'
-  //         });
-  //       }
-  //     });
-  //   } else {
-  //     this.treatmentsService.createTreatment(currentTreatment as CreateTreatmentPayload).subscribe({
-  //       next: () => {
-  //         Swal.fire({
-  //           title: '¡Guardado!',
-  //           text: 'El tratamiento ha sido creado con éxito.',
-  //           icon: 'success',
-  //           confirmButtonText: 'OK'
-  //         });
-  //         this.resetFormAndState();
-  //         this.fetchTreatments();
-  //       },
-  //       error: (err) => {
-  //         console.error('Error al crear el tratamiento:', err);
-  //         Swal.fire({
-  //           title: 'Error',
-  //           text: 'Hubo un problema al crear el tratamiento. Por favor, inténtalo de nuevo.',
-  //           icon: 'error',
-  //           confirmButtonText: 'OK'
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
-
   saveTreatment(): void {
     const currentTreatment = this.newTreatment();
     if (!currentTreatment.title || !currentTreatment.description) {
@@ -127,10 +69,8 @@ export class AdminTreatmentsComponent implements OnInit {
     }
 
     if (this.editingTreatmentId()) {
-      // Modo edición...
-      // (ya lo tenés bien)
+
     } else {
-      // Modo creación
       this.treatmentsService.createTreatment(currentTreatment as CreateTreatmentPayload).subscribe({
         next: () => {
           Swal.fire({
