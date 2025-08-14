@@ -1,176 +1,183 @@
-<div class="flex flex-col items-center min-h-screen bg-gray-100 p-4 font-sans sm:p-8">
-  <div class="w-full max-w-6xl p-4 space-y-6 bg-white rounded-xl shadow-lg sm:p-8">
-    <!-- Header: Título y botón responsivos -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
-      <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Gestión de Tratamientos</h2>
-      <button
-        (click)="toggleForm()"
-        class="w-full sm:w-auto py-2 px-4 rounded-md font-medium transition text-sm sm:text-base"
-        [ngClass]="showForm() ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-green-500 text-white hover:bg-green-600'"
-      >
-        {{ showForm() ? 'Cerrar Formulario' : 'Crear Tratamiento' }}
-      </button>
-    </div>
+<div class="w-full max-w-6xl p-4 sm:p-8 space-y-6 bg-white rounded-3xl shadow-2xl transition-all duration-300">
+  <!-- Header: Título y botón responsivos -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
+    <h2 class="text-2xl sm:text-3xl font-bold text-[#4a4a4a]">Gestión de Tratamientos</h2>
+    <button
+      (click)="toggleForm()"
+      class="w-full sm:w-auto py-2 px-6 rounded-full font-medium shadow-md transition text-sm sm:text-base transform hover:scale-105"
+      [ngClass]="showForm() ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-[#c7a59a] text-white hover:bg-[#b0938b]'"
+    >
+      {{ showForm() ? 'Cerrar Formulario' : 'Crear Tratamiento' }}
+    </button>
+  </div>
 
-    <!-- Manejo de roles y formulario -->
-    @if (userRole() !== 'Admin') {
-      <div class="text-center text-red-500">{{ errorMessage() }}</div>
-    } @else {
-      @if (showForm()) {
-        <form (ngSubmit)="saveTreatment()" class="space-y-4 p-4 bg-gray-50 rounded-xl shadow-inner sm:p-6">
-          <h3 class="text-lg sm:text-xl font-bold text-gray-800">
-            {{ editingTreatmentId() ? 'Editar Tratamiento' : 'Crear Nuevo Tratamiento' }}
-          </h3>
-          @if (errorMessage()) {
-            <div class="p-3 text-sm text-red-700 bg-red-100 rounded-lg">{{ errorMessage() }}</div>
-          }
-          <div>
-            <label for="title" class="block text-sm font-medium text-gray-700">Título</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              [ngModel]="newTreatment().title"
-              (ngModelChange)="updateNewTreatment('title', $event)"
-              required
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
-            />
+  <!-- Manejo de roles y formulario -->
+  @if (userRole() !== 'Admin') {
+    <div class="p-4 bg-red-100 text-red-700 rounded-lg text-center">{{ errorMessage() }}</div>
+  } @else {
+    @if (showForm()) {
+      <form (ngSubmit)="saveTreatment()" class="space-y-4 p-4 bg-[#f7f3f0] rounded-xl shadow-inner sm:p-6">
+        <h3 class="text-lg sm:text-xl font-bold text-[#4a4a4a]">
+          {{ editingTreatmentId() ? 'Editar Tratamiento' : 'Crear Nuevo Tratamiento' }}
+        </h3>
+        @if (errorMessage()) {
+          <div class="p-3 text-sm text-red-700 bg-red-100 rounded-lg">{{ errorMessage() }}</div>
+        }
+        <div>
+          <label for="title" class="block text-sm font-medium text-[#4a4a4a]">Título</label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            [ngModel]="newTreatment().title"
+            (ngModelChange)="updateNewTreatment('title', $event)"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#c7a59a] focus:border-[#c7a59a] text-sm sm:text-base"
+          />
+        </div>
+        <div>
+          <label for="description" class="block text-sm font-medium text-[#4a4a4a]">Descripción</label>
+          <textarea
+            id="description"
+            name="description"
+            [ngModel]="newTreatment().description"
+            (ngModelChange)="updateNewTreatment('description', $event)"
+            required
+            rows="3"
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#c7a59a] focus:border-[#c7a59a] text-sm sm:text-base"
+          ></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-[#4a4a4a]">Estado</label>
+          <div class="mt-1 flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
+            <label class="flex items-center">
+              <input
+                type="radio"
+                name="isEnabled"
+                [value]="true"
+                [checked]="newTreatment().isEnabled"
+                (change)="updateNewTreatment('isEnabled', true)"
+                class="focus:ring-[#c7a59a] h-4 w-4 text-[#c7a59a] border-gray-300"
+              />
+              <span class="ml-2 text-sm text-[#4a4a4a]">Activo</span>
+            </label>
+            <label class="flex items-center">
+              <input
+                type="radio"
+                name="isEnabled"
+                [value]="false"
+                [checked]="!newTreatment().isEnabled"
+                (change)="updateNewTreatment('isEnabled', false)"
+                class="focus:ring-[#c7a59a] h-4 w-4 text-[#c7a59a] border-gray-300"
+              />
+              <span class="ml-2 text-sm text-[#4a4a4a]">Inactivo</span>
+            </label>
           </div>
-          <div>
-            <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
-            <textarea
-              id="description"
-              name="description"
-              [ngModel]="newTreatment().description"
-              (ngModelChange)="updateNewTreatment('description', $event)"
-              required
-              rows="3"
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
-            ></textarea>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Estado</label>
-            <div class="mt-1 flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="isEnabled"
-                  [value]="true"
-                  [checked]="newTreatment().isEnabled"
-                  (change)="updateNewTreatment('isEnabled', true)"
-                  class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                />
-                <span class="ml-2 text-sm text-gray-700">Activo</span>
-              </label>
-              <label class="flex items-center">
-                <input
-                  type="radio"
-                  name="isEnabled"
-                  [value]="false"
-                  [checked]="!newTreatment().isEnabled"
-                  (change)="updateNewTreatment('isEnabled', false)"
-                  class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-                />
-                <span class="ml-2 text-sm text-gray-700">Inactivo</span>
-              </label>
-            </div>
-          </div>
-          <button
-            type="submit"
-            [disabled]="!newTreatment().title || !newTreatment().description"
-            class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition"
-            [ngClass]="{'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500': newTreatment().title && newTreatment().description, 'bg-gray-400 cursor-not-allowed': !newTreatment().title || !newTreatment().description}"
-          >
-            {{ editingTreatmentId() ? 'Actualizar Tratamiento' : 'Guardar Tratamiento' }}
-          </button>
-        </form>
-      }
+        </div>
+        <button
+          type="submit"
+          [disabled]="!newTreatment().title || !newTreatment().description"
+          class="w-full py-3 px-8 rounded-full shadow-lg text-sm font-medium text-white transition transform hover:scale-105"
+          [ngClass]="{'bg-[#c7a59a] hover:bg-[#b0938b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c7a59a]': newTreatment().title && newTreatment().description, 'bg-gray-400 cursor-not-allowed': !newTreatment().title || !newTreatment().description}"
+        >
+          {{ editingTreatmentId() ? 'Actualizar Tratamiento' : 'Guardar Tratamiento' }}
+        </button>
+      </form>
+    }
 
-      @if (!showForm()) {
-        <div class="mt-8">
-          <h3 class="text-xl font-bold text-gray-800 mb-4">Tratamientos Disponibles</h3>
-          @if (loading()) {
-            <div class="text-center text-indigo-600">Cargando tratamientos...</div>
-          } @else if (treatments().length > 0) {
-            <!-- Vista de escritorio: Tabla tradicional -->
-            <div class="hidden sm:block overflow-x-auto rounded-xl shadow-md">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Título</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  @for (treatment of treatments(); track treatment.id) {
-                    <tr class="hover:bg-gray-50">
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ treatment.title }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ treatment.description }}</td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                          [ngClass]="treatment.isEnabled ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-                          {{ treatment.isEnabled ? 'Activo' : 'Inactivo' }}
-                        </span>
-                      </td>
-                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+    @if (!showForm()) {
+      <div class="mt-8">
+        <h3 class="text-xl font-bold text-[#4a4a4a] mb-4">Tratamientos Disponibles</h3>
+        @if (loading()) {
+          <div class="text-center py-8">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#c7a59a] border-t-transparent mx-auto mb-4"></div>
+            <p class="text-[#c7a59a] font-semibold">Cargando tratamientos...</p>
+          </div>
+        } @else if (treatments().length > 0) {
+          <!-- Vista de escritorio: Tabla tradicional -->
+          <div class="hidden sm:block overflow-hidden rounded-xl shadow-md">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-[#f7f3f0]">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a]">Título</th>
+                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a]">Descripción</th>
+                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a]">Estado</th>
+                  <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a]">Acciones</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                @for (treatment of treatments(); track treatment.id) {
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#4a4a4a]">{{ treatment.title }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{{ treatment.description }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">
+                      <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                        [ngClass]="treatment.isEnabled ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                        {{ treatment.isEnabled ? 'Activo' : 'Inactivo' }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div class="flex space-x-2">
                         <button
                           (click)="editTreatment(treatment)"
-                          class="text-indigo-600 hover:text-indigo-900 mr-4 transition duration-150 ease-in-out"
+                          class="text-[#c7a59a] hover:text-[#b0938b] transition duration-150 ease-in-out"
+                          title="Editar"
                         >
                           <i class="fas fa-edit"></i>
                         </button>
                         <button
                           (click)="deleteTreatment(treatment.id!)"
                           class="text-red-600 hover:text-red-900 transition duration-150 ease-in-out"
+                          title="Eliminar"
                         >
                           <i class="fas fa-trash-alt"></i>
                         </button>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
 
-            <!-- Vista de móvil: Tarjetas para cada tratamiento -->
-            <div class="sm:hidden space-y-4">
-              @for (treatment of treatments(); track treatment.id) {
-                <div class="bg-white p-4 rounded-xl shadow-md space-y-2">
-                  <div class="flex items-center justify-between">
-                    <span class="block text-lg font-bold text-gray-900">{{ treatment.title }}</span>
-                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                          [ngClass]="treatment.isEnabled ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-                      {{ treatment.isEnabled ? 'Activo' : 'Inactivo' }}
-                    </span>
-                  </div>
-                  <div>
-                    <span class="block text-sm text-gray-700">{{ treatment.description }}</span>
-                  </div>
-                  <div class="pt-2 flex justify-end space-x-4 border-t border-gray-200">
-                    <button
-                      (click)="editTreatment(treatment)"
-                      class="text-indigo-600 hover:text-indigo-900 transition duration-150 ease-in-out"
-                    >
-                      <i class="fas fa-edit"></i> Editar
-                    </button>
-                    <button
-                      (click)="deleteTreatment(treatment.id!)"
-                      class="text-red-600 hover:text-red-900 transition duration-150 ease-in-out"
-                    >
-                      <i class="fas fa-trash-alt"></i> Eliminar
-                    </button>
-                  </div>
+          <!-- Vista de móvil: Tarjetas para cada tratamiento -->
+          <div class="sm:hidden space-y-4">
+            @for (treatment of treatments(); track treatment.id) {
+              <div class="bg-white p-4 rounded-xl shadow-md space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="block text-lg font-bold text-[#4a4a4a]">{{ treatment.title }}</span>
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                    [ngClass]="treatment.isEnabled ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                    {{ treatment.isEnabled ? 'Activo' : 'Inactivo' }}
+                  </span>
                 </div>
-              }
-            </div>
-
-          } @else {
-            <div class="text-center py-8 text-gray-500">No hay tratamientos creados.</div>
-          }
-        </div>
-      }
+                <div>
+                  <span class="block text-sm text-[#4a4a4a]">{{ treatment.description }}</span>
+                </div>
+                <div class="pt-2 flex justify-end space-x-4 border-t border-gray-200">
+                  <button
+                    (click)="editTreatment(treatment)"
+                    class="text-[#c7a59a] hover:text-[#b0938b] transition duration-150 ease-in-out"
+                    title="Editar"
+                  >
+                    <i class="fas fa-edit"></i> Editar
+                  </button>
+                  <button
+                    (click)="deleteTreatment(treatment.id!)"
+                    class="text-red-600 hover:text-red-900 transition duration-150 ease-in-out"
+                    title="Eliminar"
+                  >
+                    <i class="fas fa-trash-alt"></i> Eliminar
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="text-center py-8 text-gray-500">No hay tratamientos creados.</div>
+        }
+      </div>
     }
-  </div>
+  }
 </div>
+
