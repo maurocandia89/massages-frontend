@@ -1,79 +1,55 @@
 <!-- Este es el contenido de tu formulario, ahora sin la estructura HTML completa -->
-<div class="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg transition-transform duration-300 transform hover:scale-105">
+<div
+    class="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg transition-transform duration-300 transform hover:scale-105">
     <h2 class="text-3xl font-bold text-center text-[#c7a59a]">Crear una cuenta</h2>
     <form (ngSubmit)="register()" class="space-y-4">
         <div>
             <label for="name" class="block text-sm font-medium text-[#4a4a4a]">Nombre</label>
-            <input
-                id="name"
-                name="name"
-                type="text"
-                required
+            <input id="name" name="name" type="text" required
                 class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-[#c7a59a] sm:text-sm transition duration-300"
-                [ngModel]="user().name"
-                (ngModelChange)="updateUser('name', $event)"
-            />
+                [ngModel]="user().name" (ngModelChange)="updateUser('name', $event)" />
         </div>
         <div>
             <label for="lastName" class="block text-sm font-medium text-[#4a4a4a]">Apellido</label>
-            <input
-                id="lastName"
-                name="lastName"
-                type="text"
-                required
+            <input id="lastName" name="lastName" type="text" required
                 class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-[#c7a59a] sm:text-sm transition duration-300"
-                [ngModel]="user().lastName"
-                (ngModelChange)="updateUser('lastName', $event)"
-            />
+                [ngModel]="user().lastName" (ngModelChange)="updateUser('lastName', $event)" />
         </div>
         <div>
             <label for="email" class="block text-sm font-medium text-[#4a4a4a]">Email</label>
-            <input
-                id="email"
-                name="email"
-                type="email"
-                required
+            <input id="email" name="email" type="email" required
                 class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-[#c7a59a] sm:text-sm transition duration-300"
-                [ngModel]="user().email"
-                (ngModelChange)="updateUser('email', $event)"
-            />
+                [ngModel]="user().email" (ngModelChange)="updateUser('email', $event)" />
+            @if (!isEmailValid(user().email) && user().email.trim() !== '') {
+            <div class="text-red-500 text-sm mt-1">El email no tiene un formato válido.</div>
+            }
+
         </div>
         <div>
             <label for="password" class="block text-sm font-medium text-[#4a4a4a]">Contraseña</label>
-            <input
-                id="password"
-                name="password"
-                type="password"
-                required
+            <input id="password" name="password" type="password" required
                 class="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-[#c7a59a] sm:text-sm transition duration-300"
-                [ngModel]="user().password"
-                (ngModelChange)="updateUser('password', $event)"
-            />
+                [ngModel]="user().password" (ngModelChange)="updateUser('password', $event)" />
         </div>
-        
+
         <div class="flex items-center justify-between space-x-4">
-            <button
-                type="button"
-                (click)="onCancel()"
-                class="w-full flex justify-center py-3 px-8 border border-[#c7a59a] rounded-full shadow-md text-sm font-bold text-[#c7a59a] bg-white hover:bg-[#f7f3f0] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c7a59a] transition duration-300"
-            >
+            <button type="button" (click)="onCancel()"
+                class="w-full flex justify-center py-3 px-8 border border-[#c7a59a] rounded-full shadow-md text-sm font-bold text-[#c7a59a] bg-white hover:bg-[#f7f3f0] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c7a59a] transition duration-300">
                 Cancelar
             </button>
-            <button
-                type="submit"
-                [disabled]="!isFormValid()"
-                class="w-full flex justify-center py-3 px-8 border border-transparent rounded-full shadow-lg text-sm font-bold text-white bg-[#c7a59a] hover:bg-[#b0938b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c7a59a] disabled:opacity-50 disabled:cursor-not-allowed transition duration-300 transform hover:scale-105"
-            >
+            <button type="submit" [disabled]="!isFormValid()"
+                class="w-full flex justify-center py-3 px-8 border border-transparent rounded-full shadow-lg text-sm font-bold text-white bg-[#c7a59a] hover:bg-[#b0938b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#c7a59a] disabled:opacity-50 disabled:cursor-not-allowed transition duration-300 transform hover:scale-105">
                 Registrarse
             </button>
         </div>
     </form>
     @for (message of errorMessages(); track message) {
-        <div class="text-center text-red-500 text-sm">
-            {{ message }}
-        </div>
+    <div class="text-center text-red-500 text-sm">
+        {{ message }}
+    </div>
     }
     <div class="text-sm text-center">
-        <a routerLink="/login" class="font-medium text-[#c7a59a] hover:underline">¿Ya tienes una cuenta? Inicia sesión</a>
+        <a routerLink="/login" class="font-medium text-[#c7a59a] hover:underline">¿Ya tienes una cuenta? Inicia
+            sesión</a>
     </div>
 </div>

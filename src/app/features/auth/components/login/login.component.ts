@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -25,38 +25,37 @@ export class LoginComponent {
     this.user.update(current => ({ ...current, [field]: value }));
   }
 
+
+  isFormValid = computed(() => {
+    const u = this.user();
+    return u.email.trim() !== '' && u.password.trim() !== '' && this.isEmailValid(u.email);
+  });
+
   login(): void {
     this.authService.login(this.user()).subscribe({
       next: (response) => {
-  localStorage.setItem('token', response.token); // ✅ Guardar token
+        localStorage.setItem('token', response.token);
 
-  const userRole = this.authService.getUserRole();
+        const userRole = this.authService.getUserRole();
 
-  if (userRole === 'Admin') {
-    this.router.navigate(['/admin/appointments']);
-  } else if (userRole === 'Cliente') {
-    this.router.navigate(['/client/appointments']);
-  } else {
-    this.router.navigate(['/login']);
-  }
-},
-
-      // next: () => {
-
-      //   const userRole = this.authService.getUserRole();
-
-      //   if (userRole === 'Admin') {
-      //     this.router.navigate(['/admin/appointments']);
-      //   } else if (userRole === 'Cliente') {
-      //     this.router.navigate(['/client/appointments']);
-      //   } else {
-
-      //     this.router.navigate(['/login']);
-      //   }
-      // },
+        if (userRole === 'Admin') {
+          this.router.navigate(['/admin/appointments']);
+        } else if (userRole === 'Cliente') {
+          this.router.navigate(['/client/appointments']);
+        } else {
+          this.router.navigate(['/login']);
+        }
+      },
       error: (err) => {
         this.errorMessage.set('Credenciales incorrectas. Intenta de nuevo.');
       }
     });
   }
+
+  isEmailValid(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+
 }

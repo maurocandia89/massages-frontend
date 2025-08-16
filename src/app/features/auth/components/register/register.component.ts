@@ -28,10 +28,22 @@ export class RegisterComponent {
     this.user.update(current => ({ ...current, [field]: value }));
   }
 
+  // isFormValid = computed(() => {
+  //   const u = this.user();
+  //   return u.name.trim() !== '' && u.lastName.trim() !== '' && u.email.trim() !== '' && u.password.trim() !== '';
+  // });
+
   isFormValid = computed(() => {
-    const u = this.user();
-    return u.name.trim() !== '' && u.lastName.trim() !== '' && u.email.trim() !== '' && u.password.trim() !== '';
-  });
+  const u = this.user();
+  return (
+    u.name.trim() !== '' &&
+    u.lastName.trim() !== '' &&
+    u.email.trim() !== '' &&
+    u.password.trim() !== '' &&
+    this.isEmailValid(u.email)
+  );
+});
+
 
   register(): void {
     if (!this.isFormValid()) {
@@ -67,4 +79,10 @@ export class RegisterComponent {
   onCancel(): void {
     this.router.navigate(['/login']);
   }
+
+  isEmailValid(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 }
