@@ -194,4 +194,39 @@ export class ClientAppointmentsComponent implements OnInit {
     const treatment = this.treatments().find(t => t.id === treatmentId);
     return treatment ? treatment.title : 'Desconocido';
   }
+
+  public availableHours = [
+  '09:00', '10:00', '11:00', '12:00', '13:00',
+  '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
+];
+
+updateNewAppointmentDate(value: string, type: 'date' | 'time') {
+  const current = this.newAppointment().appointmentDate;
+  let datePart = '';
+  let timePart = '';
+
+  if (current) {
+    const [d, t] = current.split('T');
+    datePart = d;
+    timePart = t?.substring(0, 5) ?? '';
+  }
+
+  if (type === 'date') {
+    datePart = value;
+  } else {
+    timePart = value;
+  }
+
+  if (datePart && timePart) {
+    const iso = new Date(`${datePart}T${timePart}:00`).toISOString();
+    this.updateNewAppointment('appointmentDate', iso);
+  }
+}
+
+handleTimeChange(event: Event) {
+  const value = (event.target as HTMLSelectElement).value;
+  this.updateNewAppointmentDate(value, 'time');
+}
+
+
 }
