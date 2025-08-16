@@ -5,7 +5,7 @@ import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { RegisterUser, LoginUser } from '../types/auth.types';
 import { jwtDecode } from 'jwt-decode';
-import { environment } from '../../../../../src/environments/environment';
+import { environment } from '../../../../../src/environments/environment.prod';
 
 interface AuthResponse {
   token: string;
