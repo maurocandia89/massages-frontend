@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Treatment, CreateTreatmentPayload } from '../types/appoinment.types';
-import { environment } from '../../../../../src/environments/environment.prod';
+import { environment } from '../../../../../src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
