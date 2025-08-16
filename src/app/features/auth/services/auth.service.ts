@@ -62,8 +62,13 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return this.token();
-  }
+  return localStorage.getItem('token');
+}
+
+
+  // getToken(): string | null {
+  //   return this.token();
+  // }
 
   logout(): void {
     localStorage.removeItem('jwtToken');

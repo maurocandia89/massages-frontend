@@ -27,19 +27,33 @@ export class LoginComponent {
 
   login(): void {
     this.authService.login(this.user()).subscribe({
-      next: () => {
+      next: (response) => {
+  localStorage.setItem('token', response.token); // ✅ Guardar token
 
-        const userRole = this.authService.getUserRole();
+  const userRole = this.authService.getUserRole();
 
-        if (userRole === 'Admin') {
-          this.router.navigate(['/admin/appointments']);
-        } else if (userRole === 'Cliente') {
-          this.router.navigate(['/client/appointments']);
-        } else {
+  if (userRole === 'Admin') {
+    this.router.navigate(['/admin/appointments']);
+  } else if (userRole === 'Cliente') {
+    this.router.navigate(['/client/appointments']);
+  } else {
+    this.router.navigate(['/login']);
+  }
+},
 
-          this.router.navigate(['/login']);
-        }
-      },
+      // next: () => {
+
+      //   const userRole = this.authService.getUserRole();
+
+      //   if (userRole === 'Admin') {
+      //     this.router.navigate(['/admin/appointments']);
+      //   } else if (userRole === 'Cliente') {
+      //     this.router.navigate(['/client/appointments']);
+      //   } else {
+
+      //     this.router.navigate(['/login']);
+      //   }
+      // },
       error: (err) => {
         this.errorMessage.set('Credenciales incorrectas. Intenta de nuevo.');
       }

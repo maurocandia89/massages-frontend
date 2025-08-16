@@ -35,6 +35,9 @@ export class ClientAppointmentsComponent implements OnInit {
   public canEditAppointments = signal<boolean>(true);
   public sortBy = signal<string>('appointmentDate');
   public sortDirection = signal<'asc' | 'desc'>('asc');
+  public selectedDate = signal('');
+  public selectedTime = signal('');
+
 
   ngOnInit(): void {
     this.fetchAppointments();
@@ -93,17 +96,36 @@ export class ClientAppointmentsComponent implements OnInit {
 
   addAppointment() {
     const payload = this.newAppointment();
+    // Validación de campos obligatorios
     if (!payload.appointmentDate || !payload.treatmentId) {
       this.errorMessage.set('Todos los campos son obligatorios.');
       return;
     }
 
+    // Validación de formato de fecha
+    if (isNaN(Date.parse(payload.appointmentDate))) {
+      this.errorMessage.set('La fecha y hora deben estar completas y ser válidas.');
+      return;
+    }
+
+    const parsedDate = new Date(payload.appointmentDate);
+    const hour = parsedDate.getHours();
+    const minutes = parsedDate.getMinutes();
+
+    // Validación de rango horario
+    if (hour < 9 || hour > 19 || minutes !== 0) {
+      this.errorMessage.set('El horario debe estar entre las 9:00 y las 20:00 hs, en bloques de 1 hora.');
+      return;
+    }
+
+    // Validación de fecha futura
     const now = new Date().toISOString();
     if (payload.appointmentDate < now) {
       this.errorMessage.set('La fecha debe ser futura.');
       return;
     }
 
+    // Crear o actualizar turno
     if (this.editingAppointmentId()) {
       this.appointmentsService.updateAppointment(this.editingAppointmentId()!, payload).subscribe({
         next: () => {
@@ -112,8 +134,8 @@ export class ClientAppointmentsComponent implements OnInit {
           this.fetchAppointments();
         },
         error: (error) => {
-          console.error('Error al actualizar el turno', error);
-          this.errorMessage.set('Error al actualizar el turno. Intenta de nuevo.');
+          const msg = error?.error ?? 'Error al actualizar el turno. Intenta de nuevo.';
+          this.errorMessage.set(msg);
         }
       });
     } else {
@@ -124,12 +146,13 @@ export class ClientAppointmentsComponent implements OnInit {
           this.fetchAppointments();
         },
         error: (error) => {
-          console.error('Error al crear el turno', error);
-          this.errorMessage.set('Error al crear el turno. Intenta de nuevo.');
+          const msg = error?.error ?? 'Error al crear el turno. Intenta de nuevo.';
+          this.errorMessage.set(msg);
         }
       });
     }
   }
+
 
   updateAppointment(appointment: Appointment) {
     this.editingAppointmentId.set(appointment.id);
@@ -196,36 +219,27 @@ export class ClientAppointmentsComponent implements OnInit {
   }
 
   public availableHours = [
-  '09:00', '10:00', '11:00', '12:00', '13:00',
-  '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
-];
+    '09:00', '10:00', '11:00', '12:00', '13:00',
+    '14:00', '15:00', '16:00', '17:00', '18:00', '19:00'
+  ];
 
-updateNewAppointmentDate(value: string, type: 'date' | 'time') {
-  const current = this.newAppointment().appointmentDate;
-  let datePart = '';
-  let timePart = '';
+  updateAppointmentDate() {
+    const date = this.selectedDate();
+    const time = this.selectedTime();
 
-  if (current) {
-    const [d, t] = current.split('T');
-    datePart = d;
-    timePart = t?.substring(0, 5) ?? '';
+    if (date && time) {
+      const iso = new Date(`${date}T${time}:00`).toISOString();
+      this.updateNewAppointment('appointmentDate', iso);
+    } else {
+      this.updateNewAppointment('appointmentDate', '');
+    }
   }
 
-  if (type === 'date') {
-    datePart = value;
-  } else {
-    timePart = value;
-  }
-
-  if (datePart && timePart) {
-    const iso = new Date(`${datePart}T${timePart}:00`).toISOString();
-    this.updateNewAppointment('appointmentDate', iso);
-  }
-}
 
 handleTimeChange(event: Event) {
   const value = (event.target as HTMLSelectElement).value;
-  this.updateNewAppointmentDate(value, 'time');
+  this.selectedTime.set(value);
+  this.updateAppointmentDate();
 }
 
 

@@ -29,11 +29,7 @@ export class AppointmentsService {
         return this.http.get<Appointment[]>(`${this.apiUrl}/my-appointments`, { params });
     }
 
-    // getMyAppointments(): Observable<Appointment[]> {
-    //     return this.http.get<Appointment[]>(`${this.apiUrl}/my-appointments`);
-    // }
-
-    getAppointmentById(id: string): Observable<Appointment> { // Corregido el tipo de id
+    getAppointmentById(id: string): Observable<Appointment> {
         return this.http.get<Appointment>(`${this.apiUrl}/${id}`);
     }
 
@@ -45,7 +41,7 @@ export class AppointmentsService {
         return this.http.put<Appointment>(`${this.apiUrl}/${id}`, payload);
     }
 
-    deleteAppointment(id: string): Observable<void> { // Corregido el tipo de id
+    deleteAppointment(id: string): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 }

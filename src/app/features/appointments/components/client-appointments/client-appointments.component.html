@@ -28,55 +28,62 @@
       </div>
     </div>
 
-    <!-- Formulario para agregar/editar turno -->
-    <div *ngIf="showForm()">
-      <div class="bg-gray-50 rounded-lg p-6 md:p-8">
-        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">{{ editingAppointmentId() ? 'Editar Turno' :
-          'Agregar Nuevo Turno' }}</h2>
-        <form (ngSubmit)="addAppointment()" class="space-y-4">
-          <div>
-            <label for="appointmentDate" class="block text-sm font-medium text-gray-700">Fecha</label>
-            <input type="date" id="appointmentDate" name="appointmentDate"
-              [ngModel]="newAppointment().appointmentDate ? newAppointment().appointmentDate.split('T')[0] : ''"
-              (ngModelChange)="updateNewAppointmentDate($event, 'date')"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-          </div>
+<!-- Formulario para agregar/editar turno -->
+<div *ngIf="showForm()">
+  <div class="bg-gray-50 rounded-lg p-6 md:p-8">
+    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-6">{{ editingAppointmentId() ? 'Editar Turno' : 'Agregar Nuevo Turno' }}</h2>
+    <form (ngSubmit)="addAppointment()" class="space-y-4">
 
-          <div>
-            <label for="appointmentTime" class="block text-sm font-medium text-gray-700">Hora</label>
-            <select id="appointmentTime" name="appointmentTime" (change)="handleTimeChange($event)"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-              <option value="" disabled [selected]="!newAppointment().appointmentDate">Seleccione una hora</option>
-              <option *ngFor="let hour of availableHours" [value]="hour">{{ hour }} hs</option>
-            </select>
-          </div>
-
-
-
-          <div>
-            <label for="treatment" class="block text-sm font-medium text-gray-700">Tratamiento</label>
-            <select id="treatment" name="treatment" [ngModel]="newAppointment().treatmentId"
-              (ngModelChange)="updateNewAppointment('treatmentId', $event)"
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-              <option value="" disabled>Seleccione un tratamiento</option>
-              <option *ngFor="let treatment of treatments()" [value]="treatment.id">
-                {{ treatment.title }}
-              </option>
-            </select>
-          </div>
-          <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 mt-6">
-            <button type="button" (click)="cancelForm()"
-              class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-200">
-              Cancelar
-            </button>
-            <button type="submit"
-              class="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
-              {{ editingAppointmentId() ? 'Guardar Cambios' : 'Crear Turno' }}
-            </button>
-          </div>
-        </form>
+      <!-- Fecha -->
+      <div>
+        <label for="appointmentDate" class="block text-sm font-medium text-gray-700">Fecha</label>
+        <input type="date" id="appointmentDate" name="appointmentDate"
+               [ngModel]="selectedDate()"
+               (ngModelChange)="selectedDate.set($event); updateAppointmentDate()"
+               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
       </div>
-    </div>
+
+      <!-- Hora -->
+      <div>
+        <label for="appointmentTime" class="block text-sm font-medium text-gray-700">Hora</label>
+        <select id="appointmentTime" name="appointmentTime"
+                [ngModel]="selectedTime()"
+                (ngModelChange)="selectedTime.set($event); updateAppointmentDate()"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+          <option value="" disabled selected>Seleccione una hora</option>
+          <option *ngFor="let hour of availableHours" [value]="hour">{{ hour }} hs</option>
+        </select>
+      </div>
+
+      <!-- Tratamiento -->
+      <div>
+        <label for="treatment" class="block text-sm font-medium text-gray-700">Tratamiento</label>
+        <select id="treatment" name="treatment"
+                [ngModel]="newAppointment().treatmentId"
+                (ngModelChange)="updateNewAppointment('treatmentId', $event)"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+          <option value="" disabled>Seleccione un tratamiento</option>
+          <option *ngFor="let treatment of treatments()" [value]="treatment.id">
+            {{ treatment.title }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 mt-6">
+        <button type="button" (click)="cancelForm()"
+                class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-200">
+          Cancelar
+        </button>
+        <button type="submit"
+                class="px-4 py-2 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+          {{ editingAppointmentId() ? 'Guardar Cambios' : 'Crear Turno' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
 
     <!-- Sección de carga -->
     <div *ngIf="loading()" class="text-center py-10">
