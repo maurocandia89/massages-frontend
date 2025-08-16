@@ -5,6 +5,7 @@ import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { RegisterUser, LoginUser } from '../types/auth.types';
 import { jwtDecode } from 'jwt-decode';
+import { environment } from '../../../../../src/environments/environment';
 
 interface AuthResponse {
   token: string;
@@ -14,7 +15,7 @@ interface AuthResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://localhost:7037/api/Auth';
+  private apiUrl = `${environment.apiUrl}/Auth`;
   private token = signal<string | null>(localStorage.getItem('jwtToken'));
   private userRole = signal<string | null>(null); // Nuevo signal para el rol
   private isLoggedInSubject = new BehaviorSubject<boolean>(!!this.token());

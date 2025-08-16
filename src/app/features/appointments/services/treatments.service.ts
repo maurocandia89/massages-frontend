@@ -3,14 +3,14 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Treatment, CreateTreatmentPayload } from '../types/appoinment.types';
+import { environment } from '../../../../../src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TreatmentsService {
   private http = inject(HttpClient);
-  // La URL base para el nuevo controlador
-  private apiUrl = 'https://localhost:7037/api/Treatments'; 
+  private apiUrl = `${environment.apiUrl}/Treatments`;
 
   /**
    * Obtiene todos los tratamientos disponibles desde el backend.
