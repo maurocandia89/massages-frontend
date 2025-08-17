@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { RegisterUser, LoginUser } from '../types/auth.types';
 import { jwtDecode } from 'jwt-decode';
 import { environment } from '../../../../../src/environments/environment';
+import { ForgotPasswordComponent } from '../components/forgot-password/forgot-password.component';
 
 interface AuthResponse {
   token: string;
@@ -65,11 +66,6 @@ export class AuthService {
   return localStorage.getItem('token');
 }
 
-
-  // getToken(): string | null {
-  //   return this.token();
-  // }
-
   logout(): void {
     localStorage.removeItem('jwtToken');
     this.token.set(null);
@@ -77,4 +73,22 @@ export class AuthService {
     this.isLoggedInSubject.next(false);
     this.router.navigate(['/login']);
   }
+
+  confirmEmail(userId: string, token: string): Observable<any> {
+  const url = `${this.apiUrl}/confirm-email?userId=${userId}&token=${token}`;
+  return this.http.get(url);
+}
+
+forgotPassword(email: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/forgot-password`, { email });
+}
+
+resetPassword(email: string, token: string, newPassword: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}/reset-password`, {
+    email,
+    token,
+    newPassword
+  });
+}
+
 }
