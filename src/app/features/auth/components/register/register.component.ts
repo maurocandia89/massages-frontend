@@ -28,11 +28,6 @@ export class RegisterComponent {
     this.user.update(current => ({ ...current, [field]: value }));
   }
 
-  // isFormValid = computed(() => {
-  //   const u = this.user();
-  //   return u.name.trim() !== '' && u.lastName.trim() !== '' && u.email.trim() !== '' && u.password.trim() !== '';
-  // });
-
   isFormValid = computed(() => {
   const u = this.user();
   return (

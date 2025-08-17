@@ -4,8 +4,7 @@ import { RegisterComponent } from './features/auth/components/register/register.
 import { ClientAppointmentsComponent } from './features/appointments/components/client-appointments/client-appointments.component';
 import { AdminAppointmentsComponent } from './features/appointments/components/admin-appointments/admin-appointments.component';
 import { AdminTreatmentsComponent } from './features/appointments/components/admin-treatments/admin-treatments.component';
-import { AuthGuard } from '../app/app.guard'; // Importa tu guardia de ruta
-import { ConfirmEmailComponent } from './features/auth/components/confirm-email/confirm-email.component';
+import { AuthGuard } from '../app/app.guard';
 import { ResetPasswordComponent } from './features/auth/components/reset-password/reset-password.component';
 import { ForgotPasswordComponent } from './features/auth/components/forgot-password/forgot-password.component';
 
@@ -15,7 +14,6 @@ export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'confirm-email', component: ConfirmEmailComponent },
 { path: 'reset-password', component: ResetPasswordComponent },
 { path: 'forgot-password', component: ForgotPasswordComponent },
 
