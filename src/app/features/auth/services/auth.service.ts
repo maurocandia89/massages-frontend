@@ -84,11 +84,11 @@ forgotPassword(email: string): Observable<any> {
 }
 
 resetPassword(email: string, token: string, newPassword: string): Observable<any> {
-  return this.http.post(`${this.apiUrl}/reset-password`, {
-    email,
-    token,
-    newPassword
-  });
+  return this.http.post(`${environment.apiUrl}/reset-password`, {
+  email: email,
+  token: token,
+  newPassword: newPassword
+});
 }
 
 }
