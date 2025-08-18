@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-reset-password',
@@ -22,25 +23,32 @@ export class ResetPasswordComponent {
     this.token = this.route.snapshot.queryParamMap.get('token') ?? '';
   }
 
+  loading = signal(false);
+
   reset(): void {
     if (this.newPassword !== this.confirmPassword) {
       this.message.set('Las contraseñas no coinciden.');
       return;
     }
 
-    this.http.post('https://localhost:44308/api/Auth/reset-password', {
+    this.loading.set(true);
+
+    this.http.post(`${environment.apiUrl}/Auth/reset-password`, {
       email: this.email,
       token: this.token,
       newPassword: this.newPassword
     }).subscribe({
       next: () => {
         this.message.set('Contraseña actualizada correctamente. Ya puedes iniciar sesión.');
-         setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 2000);
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
       },
       error: () => {
         this.message.set('Hubo un error al actualizar la contraseña.');
+      },
+      complete: () => {
+        this.loading.set(false);
       }
     });
   }

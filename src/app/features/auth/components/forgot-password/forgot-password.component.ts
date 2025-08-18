@@ -13,7 +13,9 @@ export class ForgotPasswordComponent {
   email = signal('');
   message = signal<string | null>(null);
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
+
+  loading = signal(false);
 
   sendRecovery(): void {
     if (!this.email().trim()) {
@@ -21,12 +23,16 @@ export class ForgotPasswordComponent {
       return;
     }
 
+    this.loading.set(true);
     this.authService.forgotPassword(this.email()).subscribe({
       next: () => {
         this.message.set('Se envió un correo con instrucciones para recuperar tu contraseña.');
       },
       error: () => {
         this.message.set('No se pudo enviar el correo. Verifica tu email o intenta más tarde.');
+      },
+      complete: () => {
+        this.loading.set(false);
       }
     });
   }
