@@ -67,10 +67,11 @@ export class AdminAppointmentsComponent implements OnInit {
         this.appointmentsService.cancelAppointment(id, motivo).subscribe({
             next: () => {
                 this.showCancelModal.set(false);
-                this.fetchData();
+                this.fetchData(); // ← esto es clave
             },
             error: () => this.errorMessage.set('Error al cancelar el turno.')
         });
+
     }
 
 

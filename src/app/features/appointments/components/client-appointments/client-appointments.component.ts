@@ -154,14 +154,25 @@ export class ClientAppointmentsComponent implements OnInit {
   }
 
 
-  updateAppointment(appointment: Appointment) {
-    this.editingAppointmentId.set(appointment.id);
-    this.newAppointment.set({
-      appointmentDate: appointment.appointmentDate,
-      treatmentId: appointment.treatmentId
+updateAppointment(appointment: Appointment) {
+  if (appointment.estado === 'Finalizado') {
+    Swal.fire({
+      icon: 'info',
+      title: 'Turno finalizado',
+      text: 'Este turno ya está cerrado y no puede ser editado.',
+      confirmButtonText: 'OK'
     });
-    this.showForm.set(true);
+    return;
   }
+
+  this.editingAppointmentId.set(appointment.id);
+  this.newAppointment.set({
+    appointmentDate: appointment.appointmentDate,
+    treatmentId: appointment.treatmentId
+  });
+  this.showForm.set(true);
+}
+
 
   deleteAppointment(id: string) {
     Swal.fire({

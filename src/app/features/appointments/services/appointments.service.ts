@@ -49,10 +49,9 @@ export class AppointmentsService {
         return this.http.put<void>(`${this.apiUrl}/admin/approve/${id}`, {});
     }
 
-    cancelAppointment(id: string, motivo: string): Observable<void> {
-        return this.http.put<void>(`${this.apiUrl}/admin/cancel/${id}`, motivo, {
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
-
+  cancelAppointment(id: string, motivo: string): Observable<void> {
+  return this.http.put<void>(`${this.apiUrl}/admin/cancel/${id}`, { motivo }, {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
 }

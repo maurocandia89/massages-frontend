@@ -3,101 +3,118 @@
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
     <h2 class="text-2xl sm:text-3xl font-bold text-[#4a4a4a]">Gestión de Turnos (Admin)</h2>
     <div class="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
-      <button (click)="navigateToTreatments()" class="w-full sm:w-auto py-2 px-6 rounded-full bg-[#c7a59a] text-white font-medium shadow-md hover:bg-[#b0938b] transition text-sm sm:text-base transform hover:scale-105">Gestionar Tratamientos</button>
-      <button (click)="onLogout()" class="w-full sm:w-auto py-2 px-6 rounded-full bg-red-600 text-white font-medium shadow-md hover:bg-red-700 transition text-sm sm:text-base transform hover:scale-105">Cerrar Sesión</button>
+      <button (click)="navigateToTreatments()"
+        class="w-full sm:w-auto py-2 px-6 rounded-full bg-[#c7a59a] text-white font-medium shadow-md hover:bg-[#b0938b] transition text-sm sm:text-base transform hover:scale-105">Gestionar
+        Tratamientos</button>
+      <button (click)="onLogout()"
+        class="w-full sm:w-auto py-2 px-6 rounded-full bg-red-600 text-white font-medium shadow-md hover:bg-red-700 transition text-sm sm:text-base transform hover:scale-105">Cerrar
+        Sesión</button>
     </div>
   </div>
 
   <!-- Contenido principal -->
   @if (loading()) {
-    <div class="text-center py-8">
-      <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#c7a59a] border-t-transparent mx-auto mb-4"></div>
-      <p class="text-[#c7a59a] font-semibold">Cargando turnos...</p>
-    </div>
+  <div class="text-center py-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#c7a59a] border-t-transparent mx-auto mb-4"></div>
+    <p class="text-[#c7a59a] font-semibold">Cargando turnos...</p>
+  </div>
   } @else if (errorMessage()) {
-    <div class="p-4 bg-red-100 text-red-700 rounded-lg text-center">{{ errorMessage() }}</div>
+  <div class="p-4 bg-red-100 text-red-700 rounded-lg text-center">{{ errorMessage() }}</div>
   } @else {
-    <!-- Vista de escritorio -->
-    <div class="hidden sm:block overflow-hidden rounded-xl shadow-md">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-[#f7f3f0]">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer" (click)="sort('clientName')">
-              Cliente
-              @if (sortBy() === 'clientName') {
-                <span class="ml-1">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
+  <!-- Vista de escritorio -->
+  <div class="hidden sm:block overflow-hidden rounded-xl shadow-md">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-[#f7f3f0]">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer"
+            (click)="sort('clientName')">
+            Cliente
+            @if (sortBy() === 'clientName') {
+            <span class="ml-1">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
+            }
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer"
+            (click)="sort('treatmentTitle')">
+            Tratamiento
+            @if (sortBy() === 'treatmentTitle') {
+            <span class="ml-1">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
+            }
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer"
+            (click)="sort('appointmentDate')">
+            Fecha
+            @if (sortBy() === 'appointmentDate') {
+            <span class="ml-1">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
+            }
+          </th>
+          <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a]">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        @for (appointment of appointments(); track appointment.id) {
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#4a4a4a]">{{ appointment.clientName }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{{ appointment.treatmentTitle }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{{ appointment.appointmentDate | date:
+            'dd/MM/yyyy HH:mm' }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <div class="flex space-x-2">
+              @if (appointment.estado === 'Pendiente') {
+              <button (click)="approve(appointment.id)" class="text-green-600 hover:text-green-800" title="Aprobar">
+                <i class="fas fa-check-circle"></i>
+              </button>
+              <button (click)="openCancelModal(appointment.id)" class="text-red-600 hover:text-red-800"
+                title="Cancelar">
+                <i class="fas fa-times-circle"></i>
+              </button>
               }
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer" (click)="sort('treatmentTitle')">
-              Tratamiento
-              @if (sortBy() === 'treatmentTitle') {
-                <span class="ml-1">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
-              }
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer" (click)="sort('appointmentDate')">
-              Fecha
-              @if (sortBy() === 'appointmentDate') {
-                <span class="ml-1">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
-              }
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a]">Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          @for (appointment of appointments(); track appointment.id) {
-            <tr class="hover:bg-gray-50">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#4a4a4a]">{{ appointment.clientName }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{{ appointment.treatmentTitle }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{{ appointment.appointmentDate | date: 'dd/MM/yyyy HH:mm' }}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <div class="flex space-x-2">
-                  <button (click)="approve(appointment.id)" class="text-green-600 hover:text-green-800" title="Aprobar">
-                    <i class="fas fa-check-circle"></i>
-                  </button>
-                  <button (click)="openCancelModal(appointment.id)" class="text-red-600 hover:text-red-800" title="Cancelar">
-                    <i class="fas fa-times-circle"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          } @empty {
-            <tr class="text-center text-gray-500">
-              <td colspan="4" class="p-4">No se encontraron turnos.</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+            </div>
+          </td>
 
-    <!-- Vista móvil -->
-    <div class="sm:hidden space-y-4">
-      @for (appointment of appointments(); track appointment.id) {
-        <div class="bg-white p-4 rounded-xl shadow-md space-y-2">
-          <div>
-            <span class="block text-xs font-semibold uppercase text-gray-500">Cliente</span>
-            <span class="block text-sm font-medium text-gray-900">{{ appointment.clientName }}</span>
-          </div>
-          <div>
-            <span class="block text-xs font-semibold uppercase text-gray-500">Tratamiento</span>
-            <span class="block text-sm text-gray-700">{{ appointment.treatmentTitle }}</span>
-          </div>
-          <div>
-            <span class="block text-xs font-semibold uppercase text-gray-500">Fecha</span>
-            <span class="block text-sm text-gray-700">{{ appointment.appointmentDate | date: 'dd/MM/yyyy HH:mm' }}</span>
-          </div>
-          <div class="pt-2 flex justify-end space-x-4 border-t border-gray-200">
-            <button (click)="approve(appointment.id)" class="text-green-600 hover:text-green-800" title="Aprobar">
-              <i class="fas fa-check-circle"></i> Aprobar
-            </button>
-            <button (click)="openCancelModal(appointment.id)" class="text-red-600 hover:text-red-800" title="Cancelar">
-              <i class="fas fa-times-circle"></i> Cancelar
-            </button>
-          </div>
-        </div>
-      } @empty {
-        <div class="text-center text-gray-500 p-4">No se encontraron turnos.</div>
-      }
+        </tr>
+        } @empty {
+        <tr class="text-center text-gray-500">
+          <td colspan="4" class="p-4">No se encontraron turnos.</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Vista móvil -->
+  <div class="sm:hidden space-y-4">
+    @for (appointment of appointments(); track appointment.id) {
+    <div class="bg-white p-4 rounded-xl shadow-md space-y-2">
+      <div>
+        <span class="block text-xs font-semibold uppercase text-gray-500">Cliente</span>
+        <span class="block text-sm font-medium text-gray-900">{{ appointment.clientName }}</span>
+      </div>
+      <div>
+        <span class="block text-xs font-semibold uppercase text-gray-500">Tratamiento</span>
+        <span class="block text-sm text-gray-700">{{ appointment.treatmentTitle }}</span>
+      </div>
+      <div>
+        <span class="block text-xs font-semibold uppercase text-gray-500">Fecha</span>
+        <span class="block text-sm text-gray-700">{{ appointment.appointmentDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      <div class="pt-2 flex justify-end space-x-4 border-t border-gray-200">
+        @if (appointment.estado === 'Pendiente') {
+        <button (click)="approve(appointment.id)" class="text-green-600 hover:text-green-800" title="Aprobar">
+          <i class="fas fa-check-circle"></i> Aprobar
+        </button>
+        <button (click)="openCancelModal(appointment.id)" class="text-red-600 hover:text-red-800" title="Cancelar">
+          <i class="fas fa-times-circle"></i> Cancelar
+        </button>
+        }
+      </div>
+
+
     </div>
+    } @empty {
+    <div class="text-center text-gray-500 p-4">No se encontraron turnos.</div>
+    }
+  </div>
+
   }
 
   <!-- Modal de cancelación -->
