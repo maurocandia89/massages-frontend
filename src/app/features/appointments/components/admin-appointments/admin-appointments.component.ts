@@ -23,6 +23,7 @@ export class AdminAppointmentsComponent implements OnInit {
     dateFilter: string | null = null;
     clientNameFilter: string = '';
 
+    //señales
     appointments = signal<Appointment[]>([]);
     treatments = signal<Treatment[]>([]);
     loading = signal(true);
@@ -30,6 +31,10 @@ export class AdminAppointmentsComponent implements OnInit {
     sortBy = signal<string | null>('appointmentDate');
     sortDirection = signal<'asc' | 'desc'>('asc');
     userRole = signal<string | null>(null);
+    selectedAppointmentId = signal<string | null>(null);
+    cancelReason = signal<string>('');
+    showCancelModal = signal(false);
+
 
     ngOnInit(): void {
         this.userRole.set(this.authService.getUserRole());
@@ -40,6 +45,34 @@ export class AdminAppointmentsComponent implements OnInit {
             this.loading.set(false);
         }
     }
+
+    approve(id: string): void {
+        this.appointmentsService.approveAppointment(id).subscribe({
+            next: () => this.fetchData(),
+            error: () => this.errorMessage.set('Error al aprobar el turno.')
+        });
+    }
+
+    openCancelModal(id: string): void {
+        this.selectedAppointmentId.set(id);
+        this.cancelReason.set('');
+        this.showCancelModal.set(true);
+    }
+
+    confirmCancel(): void {
+        const id = this.selectedAppointmentId();
+        const motivo = this.cancelReason();
+        if (!id || !motivo.trim()) return;
+
+        this.appointmentsService.cancelAppointment(id, motivo).subscribe({
+            next: () => {
+                this.showCancelModal.set(false);
+                this.fetchData();
+            },
+            error: () => this.errorMessage.set('Error al cancelar el turno.')
+        });
+    }
+
 
     fetchData(): void {
         this.loading.set(true);

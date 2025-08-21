@@ -1,5 +1,5 @@
 export type Treatment = {
-    id: string; 
+    id: string;
     title: string;
     description: string;
     createdAt: string;
@@ -17,12 +17,15 @@ export type Appointment = {
     createdAt: string;
     modifiedAt: string | null;
     isEnabled: boolean;
+    estado: string;
+    motivoCancelacion?: string;
+
 };
 
 export type CreateAppointmentPayload = {
 
-  appointmentDate: string;
-  treatmentId: string;
+    appointmentDate: string;
+    treatmentId: string;
 };
 
 export type UpdateAppointmentPayload = CreateAppointmentPayload;

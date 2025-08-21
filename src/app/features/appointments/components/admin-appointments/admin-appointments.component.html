@@ -1,20 +1,10 @@
 <div class="w-full max-w-6xl p-4 sm:p-8 space-y-6 bg-white rounded-3xl shadow-2xl transition-all duration-300">
-  <!-- Header: Título y botones responsivos -->
+  <!-- Header -->
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
     <h2 class="text-2xl sm:text-3xl font-bold text-[#4a4a4a]">Gestión de Turnos (Admin)</h2>
     <div class="flex flex-col space-y-2 sm:flex-row sm:space-x-4 sm:space-y-0">
-      <button
-        (click)="navigateToTreatments()"
-        class="w-full sm:w-auto py-2 px-6 rounded-full bg-[#c7a59a] text-white font-medium shadow-md hover:bg-[#b0938b] transition text-sm sm:text-base transform hover:scale-105"
-      >
-        Gestionar Tratamientos
-      </button>
-      <button
-        (click)="onLogout()"
-        class="w-full sm:w-auto py-2 px-6 rounded-full bg-red-600 text-white font-medium shadow-md hover:bg-red-700 transition text-sm sm:text-base transform hover:scale-105"
-      >
-        Cerrar Sesión
-      </button>
+      <button (click)="navigateToTreatments()" class="w-full sm:w-auto py-2 px-6 rounded-full bg-[#c7a59a] text-white font-medium shadow-md hover:bg-[#b0938b] transition text-sm sm:text-base transform hover:scale-105">Gestionar Tratamientos</button>
+      <button (click)="onLogout()" class="w-full sm:w-auto py-2 px-6 rounded-full bg-red-600 text-white font-medium shadow-md hover:bg-red-700 transition text-sm sm:text-base transform hover:scale-105">Cerrar Sesión</button>
     </div>
   </div>
 
@@ -27,38 +17,30 @@
   } @else if (errorMessage()) {
     <div class="p-4 bg-red-100 text-red-700 rounded-lg text-center">{{ errorMessage() }}</div>
   } @else {
-    <!-- Vista de escritorio: Tabla tradicional -->
+    <!-- Vista de escritorio -->
     <div class="hidden sm:block overflow-hidden rounded-xl shadow-md">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-[#f7f3f0]">
           <tr>
-            <th
-              class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer"
-              (click)="sort('clientName')"
-            >
+            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer" (click)="sort('clientName')">
               Cliente
               @if (sortBy() === 'clientName') {
                 <span class="ml-1">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
               }
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer"
-              (click)="sort('treatmentTitle')"
-            >
+            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer" (click)="sort('treatmentTitle')">
               Tratamiento
               @if (sortBy() === 'treatmentTitle') {
                 <span class="ml-1">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
               }
             </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer"
-              (click)="sort('appointmentDate')"
-            >
+            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a] cursor-pointer" (click)="sort('appointmentDate')">
               Fecha
               @if (sortBy() === 'appointmentDate') {
                 <span class="ml-1">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
               }
             </th>
+            <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-[#4a4a4a]">Acciones</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -67,17 +49,27 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[#4a4a4a]">{{ appointment.clientName }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{{ appointment.treatmentTitle }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{{ appointment.appointmentDate | date: 'short' }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <div class="flex space-x-2">
+                  <button (click)="approve(appointment.id)" class="text-green-600 hover:text-green-800" title="Aprobar">
+                    <i class="fas fa-check-circle"></i>
+                  </button>
+                  <button (click)="openCancelModal(appointment.id)" class="text-red-600 hover:text-red-800" title="Cancelar">
+                    <i class="fas fa-times-circle"></i>
+                  </button>
+                </div>
+              </td>
             </tr>
           } @empty {
             <tr class="text-center text-gray-500">
-              <td colspan="3" class="p-4">No se encontraron turnos.</td>
+              <td colspan="4" class="p-4">No se encontraron turnos.</td>
             </tr>
           }
         </tbody>
       </table>
     </div>
 
-    <!-- Vista de móvil: Tarjetas para cada turno -->
+    <!-- Vista móvil -->
     <div class="sm:hidden space-y-4">
       @for (appointment of appointments(); track appointment.id) {
         <div class="bg-white p-4 rounded-xl shadow-md space-y-2">
@@ -93,11 +85,30 @@
             <span class="block text-xs font-semibold uppercase text-gray-500">Fecha</span>
             <span class="block text-sm text-gray-700">{{ appointment.appointmentDate | date: 'short' }}</span>
           </div>
+          <div class="pt-2 flex justify-end space-x-4 border-t border-gray-200">
+            <button (click)="approve(appointment.id)" class="text-green-600 hover:text-green-800" title="Aprobar">
+              <i class="fas fa-check-circle"></i> Aprobar
+            </button>
+            <button (click)="openCancelModal(appointment.id)" class="text-red-600 hover:text-red-800" title="Cancelar">
+              <i class="fas fa-times-circle"></i> Cancelar
+            </button>
+          </div>
         </div>
       } @empty {
         <div class="text-center text-gray-500 p-4">No se encontraron turnos.</div>
       }
     </div>
   }
-</div>
 
+  <!-- Modal de cancelación -->
+  <div *ngIf="showCancelModal()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <h3 class="text-lg font-bold mb-4">Motivo de cancelación</h3>
+      <textarea [(ngModel)]="cancelReason" rows="3" class="w-full border rounded p-2"></textarea>
+      <div class="mt-4 flex justify-end space-x-2">
+        <button (click)="showCancelModal.set(false)" class="px-4 py-2 bg-gray-300 rounded">Cancelar</button>
+        <button (click)="confirmCancel()" class="px-4 py-2 bg-red-600 text-white rounded">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
